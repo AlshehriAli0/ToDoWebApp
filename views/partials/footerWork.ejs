@@ -1,0 +1,189 @@
+<footer>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <div class="Jc">
+        <div class="leftFooter">
+            <p style="color: #424f6a !important; font-weight: 650;">&copy Ali Alshehri 2023 | ToDo Web-App </p>
+        </div>
+        <div class="rightFooter">
+            <div class="social-buttons">
+                <a href="https://www.linkedin.com/in/ali-alshehri-340b26284"
+                    class="social-button social-button--linkedin" aria-label="LinkedIn">
+                    <img src="/public/svg/linkedin.svg" height="20px" alt="Linkdin icon">
+                </a>
+
+                <a href="https://github.com/AlshehriAli0" class="social-button social-button--github"
+                    aria-label="GitHub">
+                    <img src="/public/svg/github.svg" height="20px" alt="github icon">
+                </a>
+
+                <a href="https://codepen.io/AlshehriAli0" class="social-button social-button--codepen"
+                    aria-label="CodePen">
+                    <img src="/public/svg/codepen.svg" height="20px" alt="Codepen icon">
+                </a>
+            </div>
+        </div>
+    </div>
+    <% if (existWork===true) { %>
+        <script> alert("The task already exisits") 
+        </script>
+        <% } %>
+</footer>
+<script>
+
+
+    // variables
+    var taskBox = document.querySelectorAll(".liBox");
+    var cbox = document.querySelector(".cb");
+    var checkboxStatus = document.querySelectorAll(".cb");
+    const unorderedList = document.querySelector(".ul");
+
+    // functions
+    function buttonAnmt(event) {
+        var activeli = event.classList;
+        activeli.add("pressed");
+
+        setTimeout(function () {
+            activeli.remove("pressed");
+        }, 100);
+    }
+
+
+    function reorderul() {
+        checkboxStatus.forEach((reorder) => {
+            var trueEvent = reorder.closest("li")
+            if (reorder.checked === true) {
+                unorderedList.append(trueEvent)
+            }
+        })
+    }
+
+    function handleDivClick(event) {
+        const eventContainer = event
+        const checkbox = event.querySelector('.check .cb');
+        checkbox.checked = !checkbox.checked;
+        var changeEvent = new CustomEvent('change');
+        checkbox.dispatchEvent(changeEvent);
+
+        setTimeout(() => {
+            $(eventContainer).toggleClass("open closed")
+        }, 700)
+
+        if (checkbox.checked === true) {
+            buttonAnmt(eventContainer);
+            setTimeout(() => {
+                unorderedList.append(event);
+            }, 1000)
+            setTimeout(() => {
+                $(eventContainer).toggleClass("open closed")
+            }, 1500)
+
+        } else if (checkbox.checked === false) {
+            buttonAnmt(eventContainer);
+            setTimeout(() => {
+                $(eventContainer).toggleClass("open closed");
+            }, 1700)
+
+            setTimeout(() => {
+                unorderedList.prepend(event)
+            }, 1200)
+
+        }
+    }
+
+    function handleBtnClick(event) {
+        const eventContainer = event.target.closest("li")
+        const checkbox = event.target
+        checkbox.checked = !checkbox.checked;
+        // var changeEvent = new CustomEvent('change');
+        // checkbox.dispatchEvent(changeEvent);
+
+        setTimeout(() => {
+            $(eventContainer).toggleClass("open closed")
+        }, 700)
+
+        if (checkbox.checked === false) {
+            buttonAnmt(eventContainer);
+            setTimeout(() => {
+                unorderedList.append(eventContainer);
+            }, 1000)
+            setTimeout(() => {
+                $(eventContainer).toggleClass("open closed")
+            }, 1500)
+
+        } else if (checkbox.checked === true) {
+            buttonAnmt(eventContainer);
+            setTimeout(() => {
+                $(eventContainer).toggleClass("open closed");
+            }, 1700)
+
+            setTimeout(() => {
+                unorderedList.prepend(eventContainer)
+            }, 1200)
+
+        }
+    }
+
+    // handle task click
+    taskBox.forEach(Box => {
+        Box.addEventListener("click", () => {
+            var l = document.getElementsByClassName('ul');
+            if (event.target.classList.contains("cb") === false) {
+                var trueEvent = event.target.closest("li")
+                handleDivClick(trueEvent)
+
+            }
+            else {
+                event.target.checked = !event.target.checked
+            }
+
+
+        })
+    });
+
+
+    checkboxStatus.forEach(tick => {
+        tick.addEventListener("click", (e) => {
+            if (event.target.classList.contains("cb") === true) {
+                handleBtnClick(e)
+
+            }
+            else {
+                event.target.checked = !event.target.checked
+            }
+        })
+    });
+
+    //    save added items
+    document.addEventListener("click", () => {
+        var work, works = [];
+        $('.cb').each(function () {
+            work = { id: $(this).attr('id'), value: $(this).prop('checked') };
+            works.push(work);
+        });
+        var trueChecked = works.filter(work => work.value === true);
+        var falseChecked = works.filter(work => work.value === false);
+        var orderedworks = trueChecked.concat(falseChecked);
+        localStorage.setItem("workorites", JSON.stringify(orderedworks));
+    })
+
+    document.addEventListener("DOMContentLoaded", () => {
+        var work, works = [];
+        $('.cb').each(function () {
+            work = { id: $(this).attr('id'), value: $(this).prop('checked') };
+            works.push(work);
+        });
+        var trueChecked = works.filter(work => work.value === true);
+        var falseChecked = works.filter(work => work.value === false);
+        var orderedworks = trueChecked.concat(falseChecked);
+        localStorage.setItem("workorites", JSON.stringify(orderedworks));
+        reorderul()
+    })
+
+    var workorites = JSON.parse(localStorage.getItem('workorites'));
+
+    for (var i = 0; i < workorites.length; i++) {
+        $('#' + workorites[i].id).prop('checked', workorites[i].value);
+    }
+</script>
+</div>
+<script src="/js/bootstrap.js"></script>

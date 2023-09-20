@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>To Do</title>
+  <link rel="icon" type="image/x-icon" href="/public/images/check-square(1).svg">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/public/styles/styles.css" type="text/css" />
+  <link rel="stylesheet" href="/public/styles/style.css" type="text/css" />
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"
+    integrity="sha512-aUhL2xOCrpLEuGD5f6tgHbLYEXRpYZ8G5yD+WlFrXrPy2IrWBlu6bih5C9H6qGsgqnU6mgx6KtU8TreHpASprw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta name="theme-color" content="#283041">
+
+</head>
+
+<header>
+  <ul class="nav nav-underline d-flex sticky">
+    <li class="nav-item d-flex align-items-center" id="removeli">
+      <img src="/public/images/check-square(1).svg" alt="" height="35px" />
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="/">Today</a>
+    </li>
+    <li class="nav-item d-flex">
+      <a class="nav-link" href="/work">Important</a>
+    </li>
+    <li class="nav-item d-flex date ms-auto">
+      <a class="nav-link disabled" style="font-weight: 600; color: white !important" href="#">
+        <%=dateAndDay%>
+      </a>
+    </li>
+  </ul>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      setTimeout(() => {
+        document.querySelector(".ul").classList.add("fade-in-active")
+      }, 70);
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 30) {
+          document.querySelector(".nav").classList.add('navColor');
+
+        } else {
+          document.querySelector(".nav").classList.remove('navColor');
+        }
+      });
+    });
+  </script>
+</header>
+
+</html>

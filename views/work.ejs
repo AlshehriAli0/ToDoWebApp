@@ -1,0 +1,37 @@
+<%- include("partials/headerWork.ejs") %>
+
+  <body>
+    <div class="bodyPadding container-fluid">
+      <p class="mqStyle">
+        <%=dateAndDay%>
+      </p>
+      <div class="parentCont">
+        <form action="/work" method="post" class="newTask">
+          <input type="text" id="newWorkNote" name="newWorkNote" placeholder="Add a new task....." /><button
+            type="submit">Add</button>
+
+          <br />
+        </form>
+      </div>
+      <div class="container">
+        <main class="existingTasks">
+          <ul class="existingTasks ul fade-in">
+            <% addedWorkTasks.forEach((addedWorkTasks)=> { %>
+              <li class="existingTasks liBox open">
+                <div class="check" id="Slider">
+                  <div class="listyle">
+                    <input type="checkbox" name="cb" id="<%=addedWorkTasks%>" class="cb" name="cb" value="cb" />
+                    <label for="cb" data-content="<%=addedWorkTasks%>">
+                      <%=addedWorkTasks%>
+                    </label>
+                  </div>
+                </div>
+              </li>
+              <% }) %>
+          </ul>
+        </main>
+      </div>
+    </div> <%- include("partials/footerWork.ejs") %>
+  </body>
+
+  </html>
