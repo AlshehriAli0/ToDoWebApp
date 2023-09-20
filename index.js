@@ -21,7 +21,7 @@ mongoose.connect(mongoURI, {
 const store = new MongoDBStore({
   uri: mongoURI,
   collection: "sessions",
-  expires: resetTime / 1000, // Set the session expiration time in seconds
+  expires: resetTime / 1000,
 });
 
 store.on("error", (error) => {
@@ -78,7 +78,7 @@ var existWork = null;
 
 // * functions
 function waitFiveMinutes() {
-  const milliseconds = 5 * 60 * 1000;
+  const milliseconds = 30 * 60 * 1000;
   setTimeout(() => {
     addedTasks = [];
     addedWorkTasks = [];
@@ -86,7 +86,7 @@ function waitFiveMinutes() {
 }
 
 function waitFiveMinutesWork() {
-  const milliseconds = 5 * 60 * 1000;
+  const milliseconds = 30 * 60 * 1000;
   setTimeout(() => {
     addedWorkTasks = [];
   }, milliseconds);
