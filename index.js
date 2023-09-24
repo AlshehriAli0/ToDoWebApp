@@ -46,6 +46,29 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/", express.static("./node_modules/bootstrap/dist/"));
 
+//* reduce resource on mongodb
+app.use((req, res, next) => {
+  const pauseAndSaveSession = (req, res, next) => {
+    req.pauseSession = () => {
+      req.session.pause = true;
+    };
+    req.resumeSession = () => {
+      req.session.pause = false;
+    };
+    if (req.session && req.session.pause) {
+      req.session.save = (callback) => {
+        if (req.session.hasChanges) {
+          req.session.hasChanges = false;
+          return store.set(req.sessionID, req.session, callback);
+        }
+        callback();
+      };
+    }
+    next();
+  };
+  pauseAndSaveSession(req, res, next);
+});
+
 //* variables
 var today = new Date();
 var day = today.getDate();
@@ -106,9 +129,9 @@ app.post("/", (req, res) => {
     if (req.body["newNote"] != "") {
       addedTasks.unshift(req.body["newNote"]);
       req.session.addedTasks = addedTasks;
+      req.session.hasChanges = true;
     }
   }
-
   res.render("index.ejs", { dateAndDay, addedTasks });
 });
 
@@ -118,33 +141,10 @@ app.post("/work", (req, res) => {
     if (req.body["newWorkNote"] != "") {
       addedWorkTasks.unshift(req.body["newWorkNote"]);
       req.session.addedWorkTasks = addedWorkTasks;
+      req.session.hasChanges = true;
     }
   }
-
   res.render("work.ejs", { dateAndDay, addedWorkTasks });
-});
-
-// reduce resource on mongodb
-app.use((req, res, next) => {
-  const pauseAndSaveSession = (req, res, next) => {
-    req.pauseSession = () => {
-      req.session.pause = true;
-    };
-
-    req.resumeSession = () => {
-      req.session.pause = false;
-    };
-
-    if (req.session && req.session.pause) {
-      req.session.save = (callback) => {
-        callback();
-      };
-    }
-
-    next();
-  };
-
-  pauseAndSaveSession(req, res, next);
 });
 
 app.listen(port, () => {
