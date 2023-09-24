@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 const resetTime = 1000 * 60 * 60 * 24 * 30;
 const app = express();
 const port = process.env.PORT || 3000;
-const sessionSecret = "UniqueSessionSecret";
+const sessionSecret = process.env.SESSION_SECRET;
 const mongoURI = process.env.mongodb_URI;
 const MongoDBStore = connectMongoDBSession(session);
 
@@ -95,40 +95,55 @@ function waitFiveMinutesWork() {
 //* app requsts
 app.get("/", (req, res) => {
   if (!req.session.userId) {
-    // Assign a unique identifier to the session
-    req.session.userId = uuidv4(); // You need to implement generateUniqueId
+    req.session.userId = uuidv4();
+    req.session.addedTasks = [];
   }
 
-  res.render("index.ejs", { dateAndDay, addedTasks, exist });
+  res.render("index.ejs", {
+    dateAndDay,
+    addedTasks: req.session.addedTasks,
+    exist,
+  });
 });
 
 app.get("/work", (req, res) => {
-  res.render("work.ejs", { dateAndDay, addedWorkTasks, existWork });
+  if (!req.session.addedWorkTasks) {
+    req.session.addedWorkTasks = [];
+  }
+  res.render("work.ejs", {
+    dateAndDay,
+    addedWorkTasks: req.session.addedWorkTasks,
+    existWork,
+  });
 });
 
 app.post("/", (req, res) => {
+  const addedTasks = req.session.addedTasks || [];
   if (addedTasks.includes(req.body["newNote"]) === false) {
     if (req.body["newNote"] != "") {
       exist = false;
       addedTasks.unshift(req.body["newNote"]);
+      req.session.addedTasks = addedTasks;
     }
-    // } else {
-    //   var exist = true;
+  } else {
+    exist = true;
   }
+
   res.render("index.ejs", { dateAndDay, addedTasks, exist });
   waitFiveMinutes();
 });
 
 app.post("/work", (req, res) => {
+  const addedWorkTasks = req.session.addedWorkTasks || [];
   if (addedWorkTasks.includes(req.body["newWorkNote"]) === false) {
     if (req.body["newWorkNote"] != "") {
       existWork = false;
       addedWorkTasks.unshift(req.body["newWorkNote"]);
+      req.session.addedWorkTasks = addedWorkTasks;
     }
+  } else {
+    existWork = true;
   }
-  //  else {
-  //   existWork = true;
-  // }
 
   res.render("work.ejs", { dateAndDay, addedWorkTasks, existWork });
   waitFiveMinutesWork();
