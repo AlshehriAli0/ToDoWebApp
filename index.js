@@ -4,13 +4,12 @@ import session from "express-session";
 import mongoose from "mongoose";
 import { default as connectMongoDBSession } from "connect-mongodb-session";
 import { v4 as uuidv4 } from "uuid";
-// process.env.SESSION_SECRET
-// process.env.mongodb_URI
+
 //* constants
 const app = express();
 const port = process.env.PORT || 3000;
-const sessionSecret = "fa085c9d61cb96e1ba7249cb618936a4CR7IsTheGoatSuiiiii";
-const mongoURI = "mongodb://127.0.0.1:27017";
+const sessionSecret = process.env.SESSION_SECRET;
+const mongoURI = process.env.mongodb_URI;
 const MongoDBStore = connectMongoDBSession(session);
 
 mongoose.connect(mongoURI, {
