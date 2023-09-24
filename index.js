@@ -36,6 +36,9 @@ app.use(
     resave: false,
     saveUninitialized: true,
     store: store,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24 * 365,
+    },
   })
 );
 app.use("/public", express.static("public"));
@@ -73,24 +76,22 @@ var dayName = [
 var dateAndDay = `${dayName[today.getDay()]}, ${day}/${monthName[month]}`;
 var addedTasks = [];
 var addedWorkTasks = [];
-var exist = null;
-var existWork = null;
 
 // * functions
-function waitFiveMinutes() {
-  const milliseconds = 30 * 60 * 1000;
-  setTimeout(() => {
-    addedTasks = [];
-    addedWorkTasks = [];
-  }, milliseconds);
-}
+// function waitFiveMinutes() {
+//   const milliseconds = 30 * 60 * 1000;
+//   setTimeout(() => {
+//     addedTasks = [];
+//     addedWorkTasks = [];
+//   }, milliseconds);
+// }
 
-function waitFiveMinutesWork() {
-  const milliseconds = 30 * 60 * 1000;
-  setTimeout(() => {
-    addedWorkTasks = [];
-  }, milliseconds);
-}
+// function waitFiveMinutesWork() {
+//   const milliseconds = 30 * 60 * 1000;
+//   setTimeout(() => {
+//     addedWorkTasks = [];
+//   }, milliseconds);
+// }
 
 //* app requsts
 app.get("/", (req, res) => {
@@ -130,7 +131,7 @@ app.post("/", (req, res) => {
   }
 
   res.render("index.ejs", { dateAndDay, addedTasks, exist });
-  waitFiveMinutes();
+  // waitFiveMinutes();
 });
 
 app.post("/work", (req, res) => {
@@ -146,7 +147,7 @@ app.post("/work", (req, res) => {
   }
 
   res.render("work.ejs", { dateAndDay, addedWorkTasks, existWork });
-  waitFiveMinutesWork();
+  // waitFiveMinutesWork();
 });
 
 app.listen(port, () => {
