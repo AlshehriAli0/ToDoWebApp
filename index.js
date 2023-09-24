@@ -21,7 +21,7 @@ const store = new MongoDBStore({
   uri: mongoURI,
   collection: "sessions",
   autoRemove: "interval",
-  autoRemoveInterval: 604800,
+  autoRemoveInterval: 30 * 24 * 3600,
   touchAfter: 30 * 24 * 3600,
 });
 
