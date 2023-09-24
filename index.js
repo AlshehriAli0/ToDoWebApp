@@ -4,12 +4,13 @@ import session from "express-session";
 import mongoose from "mongoose";
 import { default as connectMongoDBSession } from "connect-mongodb-session";
 import { v4 as uuidv4 } from "uuid";
-
+// process.env.SESSION_SECRET
+// process.env.mongodb_URI
 //* constants
 const app = express();
 const port = process.env.PORT || 3000;
-const sessionSecret = process.env.SESSION_SECRET;
-const mongoURI = process.env.mongodb_URI;
+const sessionSecret = "fa085c9d61cb96e1ba7249cb618936a4CR7IsTheGoatSuiiiii";
+const mongoURI = "mongodb://127.0.0.1:27017";
 const MongoDBStore = connectMongoDBSession(session);
 
 mongoose.connect(mongoURI, {
@@ -22,6 +23,7 @@ const store = new MongoDBStore({
   collection: "sessions",
   autoRemove: "interval",
   autoRemoveInterval: 604800,
+  touchAfter: 30 * 24 * 3600,
 });
 
 store.on("error", (error) => {
@@ -102,16 +104,7 @@ var addedWorkTasks = [];
 
 //* http requsts
 app.get("/", (req, res) => {
-  if (req.session.userId) {
-    req.session.destroy((err) => {
-      if (err) {
-        console.error(`Error destroying session: ${err}`);
-      } else {
-        req.session.userId = uuidv4();
-        req.session.addedTasks = [];
-      }
-    });
-  } else if (!req.session.userId) {
+  if (!req.session.userId) {
     req.session.userId = uuidv4();
     req.session.addedTasks = [];
   }
@@ -140,7 +133,19 @@ app.post("/", (req, res) => {
       req.session.hasChanges = true;
     }
   }
-  res.render("index.ejs", { dateAndDay, addedTasks });
+
+  if (req.session.hasChanges) {
+    req.session.hasChanges = false;
+    req.session.touch();
+    store.set(req.sessionID, req.session, (error) => {
+      if (error) {
+        console.error(`Error saving session: ${error}`);
+      }
+      res.render("index.ejs", { dateAndDay, addedTasks });
+    });
+  } else {
+    res.render("index.ejs", { dateAndDay, addedTasks });
+  }
 });
 
 app.post("/work", (req, res) => {
