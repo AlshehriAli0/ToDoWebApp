@@ -103,7 +103,6 @@ app.get("/", (req, res) => {
   res.render("index.ejs", {
     dateAndDay,
     addedTasks: req.session.addedTasks,
-    exist,
   });
 });
 
@@ -114,7 +113,6 @@ app.get("/work", (req, res) => {
   res.render("work.ejs", {
     dateAndDay,
     addedWorkTasks: req.session.addedWorkTasks,
-    existWork,
   });
 });
 
@@ -122,15 +120,12 @@ app.post("/", (req, res) => {
   const addedTasks = req.session.addedTasks || [];
   if (addedTasks.includes(req.body["newNote"]) === false) {
     if (req.body["newNote"] != "") {
-      exist = false;
       addedTasks.unshift(req.body["newNote"]);
       req.session.addedTasks = addedTasks;
     }
-  } else {
-    exist = true;
   }
 
-  res.render("index.ejs", { dateAndDay, addedTasks, exist });
+  res.render("index.ejs", { dateAndDay, addedTasks });
   // waitFiveMinutes();
 });
 
@@ -138,15 +133,12 @@ app.post("/work", (req, res) => {
   const addedWorkTasks = req.session.addedWorkTasks || [];
   if (addedWorkTasks.includes(req.body["newWorkNote"]) === false) {
     if (req.body["newWorkNote"] != "") {
-      existWork = false;
       addedWorkTasks.unshift(req.body["newWorkNote"]);
       req.session.addedWorkTasks = addedWorkTasks;
     }
-  } else {
-    existWork = true;
   }
 
-  res.render("work.ejs", { dateAndDay, addedWorkTasks, existWork });
+  res.render("work.ejs", { dateAndDay, addedWorkTasks });
   // waitFiveMinutesWork();
 });
 
