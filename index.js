@@ -6,7 +6,6 @@ import { default as connectMongoDBSession } from "connect-mongodb-session";
 import { v4 as uuidv4 } from "uuid";
 
 //* constants
-const resetTime = 1000 * 60 * 60 * 24 * 30;
 const app = express();
 const port = process.env.PORT || 3000;
 const sessionSecret = process.env.SESSION_SECRET;
@@ -21,7 +20,8 @@ mongoose.connect(mongoURI, {
 const store = new MongoDBStore({
   uri: mongoURI,
   collection: "sessions",
-  expires: resetTime / 1000,
+  autoRemove: "interval",
+  autoRemoveInterval: 604800,
 });
 
 store.on("error", (error) => {
@@ -100,13 +100,21 @@ var dateAndDay = `${dayName[today.getDay()]}, ${day}/${monthName[month]}`;
 var addedTasks = [];
 var addedWorkTasks = [];
 
-//* app requsts
+//* http requsts
 app.get("/", (req, res) => {
-  if (!req.session.userId) {
+  if (req.session.userId) {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error(`Error destroying session: ${err}`);
+      } else {
+        req.session.userId = uuidv4();
+        req.session.addedTasks = [];
+      }
+    });
+  } else if (!req.session.userId) {
     req.session.userId = uuidv4();
     req.session.addedTasks = [];
   }
-
   res.render("index.ejs", {
     dateAndDay,
     addedTasks: req.session.addedTasks,
