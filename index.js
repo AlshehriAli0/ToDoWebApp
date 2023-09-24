@@ -77,22 +77,6 @@ var dateAndDay = `${dayName[today.getDay()]}, ${day}/${monthName[month]}`;
 var addedTasks = [];
 var addedWorkTasks = [];
 
-// * functions
-// function waitFiveMinutes() {
-//   const milliseconds = 30 * 60 * 1000;
-//   setTimeout(() => {
-//     addedTasks = [];
-//     addedWorkTasks = [];
-//   }, milliseconds);
-// }
-
-// function waitFiveMinutesWork() {
-//   const milliseconds = 30 * 60 * 1000;
-//   setTimeout(() => {
-//     addedWorkTasks = [];
-//   }, milliseconds);
-// }
-
 //* app requsts
 app.get("/", (req, res) => {
   if (!req.session.userId) {
@@ -126,7 +110,6 @@ app.post("/", (req, res) => {
   }
 
   res.render("index.ejs", { dateAndDay, addedTasks });
-  // waitFiveMinutes();
 });
 
 app.post("/work", (req, res) => {
@@ -139,7 +122,29 @@ app.post("/work", (req, res) => {
   }
 
   res.render("work.ejs", { dateAndDay, addedWorkTasks });
-  // waitFiveMinutesWork();
+});
+
+// reduce resource on mongodb
+app.use((req, res, next) => {
+  const pauseAndSaveSession = (req, res, next) => {
+    req.pauseSession = () => {
+      req.session.pause = true;
+    };
+
+    req.resumeSession = () => {
+      req.session.pause = false;
+    };
+
+    if (req.session && req.session.pause) {
+      req.session.save = (callback) => {
+        callback();
+      };
+    }
+
+    next();
+  };
+
+  pauseAndSaveSession(req, res, next);
 });
 
 app.listen(port, () => {
