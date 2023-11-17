@@ -13,7 +13,7 @@ Visit the live website at [www.todowebapp.com](https://www.todowebapp.com)
 
 ## Features
 
-- **Task Management:** Add, edit, and delete tasks effortlessly.
+- **Task Management:** Add tasks effortlessly.
 - **Responsive Design:** The app is designed to work seamlessly on various devices and screen sizes.
 - **MongoDB Integration:** Tasks are stored in a MongoDB database, ensuring data persistence.
 - **The ToDo Web App uses session-based authentication. Users can start managing their tasks without the need for registration.
