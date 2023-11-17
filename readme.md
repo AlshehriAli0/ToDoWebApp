@@ -1,6 +1,6 @@
 # ToDo Web App
 
-A ToDo Web App built using:
+A ToDo Web App built in August/2023 using:
 
 - JavaScript ES6 (jQuery, Node.js, and Express.js)
 - CSS & SCSS (Bootstrap 5)
